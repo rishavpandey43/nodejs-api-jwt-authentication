@@ -1,0 +1,17 @@
+{
+  "name": "nodejs-api-jwt-authentication",
+  "version": "1.0.0",
+  "description": "It consist demonstration of api authentication using JWT with nodejs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rishav Pandey",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
