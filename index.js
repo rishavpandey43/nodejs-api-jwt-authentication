@@ -1,6 +1,10 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const bodyParser = require("body-parser");
+
+//import routes
+const authRoute = require("./routes/auth");
 
 dotenv.config();
 
@@ -11,10 +15,9 @@ mongoose.connect(
   () => console.log("Connection to database successful")
 );
 
-//import routes
-const authRoute = require("./routes/auth");
-
 const app = express();
+
+app.use(bodyParser.json());
 
 app.use("/api/user", authRoute);
 
