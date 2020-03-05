@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const User = require("../model//User");
 
@@ -21,13 +22,13 @@ router.post("/register", async (req, res) => {
   // checking for duplicate user
   const emailExist = await User.findOne({ email: req.body.email });
 
-  // HASH the password
-  const salt = await bcrypt.genSalt(10);
-  const hashPassword = await bcrypt.hash(req.body.password, salt);
-
   if (emailExist) {
     return res.status(400).send("User already exists, registration cancelled");
   }
+
+  // HASH the password
+  const salt = await bcrypt.genSalt(10);
+  const hashPassword = await bcrypt.hash(req.body.password, salt);
 
   const user = new User({
     name: req.body.name,
@@ -56,5 +57,28 @@ router.post("/register", async (req, res) => {
   //   });
 });
 
-router.post("/login", (req, res) => {});
+router.post("/login", async (req, res) => {
+  // Validate data before processing the request
+  const { error } = loginValidation(req.body);
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }
+
+  // checking for user not exist
+  const user = await User.findOne({ email: req.body.email });
+
+  if (!user) {
+    return res.status(400).send("Email doesn't exist");
+  }
+
+  // checking for correct password
+  const validPass = await bcrypt.compare(req.body.password, user.password);
+  if (!validPass) {
+    return res.status(400).send("Password entered is incorrect");
+  }
+
+  // create and assign token
+  const token = jwt.sign({ _id: user.id }, process.env.TOKEN_SECRET);
+  res.header("auth-token", token).send(token);
+});
 module.exports = router;

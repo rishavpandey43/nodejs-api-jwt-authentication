@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 
 //import routes
 const authRoute = require("./routes/auth");
+const postRoute = require("./routes/post");
 
 dotenv.config();
 
@@ -20,5 +21,6 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use("/api/user", authRoute);
+app.use("/api/posts", postRoute);
 
 app.listen(3000, () => console.log("Server running and up"));
